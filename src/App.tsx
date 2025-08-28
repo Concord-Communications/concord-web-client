@@ -1,0 +1,65 @@
+import MessageListGroup from "./components/MessageListGroup.tsx";
+import MessageBar from "./components/MessageBar.tsx"
+import UserPane from "./components/UserPane.tsx";
+
+import './App.css'
+import {useState, useEffect} from "react";
+import Sidebar from "./components/Sidebar.tsx";
+import { Channel } from "./components/Sidebar.tsx";
+import NewChannelPopup from "./components/NewChannelPopup.tsx"
+
+function App() {
+    const [token, setToken] = useState("")
+    const [apiHost] = useState("http://" + window.location.hostname + ":8080/api")
+    const [sockHost] = useState("ws://" + window.location.hostname + ":8081")
+    const [channel, setChannel] = useState("1")
+    const [sidebar, setSidebar] = useState<boolean>(false);
+    const [messageContainerSpacing, setMessageContainerSpacing] = useState<string>("0%")
+    const [channels, setChannels] = useState<Channel[]>([])
+    const [newChannelPrompt, setNewChannelPrompt] = useState(false)
+
+    // Encryption
+    //const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null)
+    //const [publicKey, setPublicKey] = useState<CryptoKey | null>(null)
+
+
+    useEffect(() => {
+        if (sidebar) {
+            setMessageContainerSpacing("20%")
+        } else {
+            setMessageContainerSpacing("0%")
+        }
+    }, [sidebar])
+
+    return (<>
+        { (token === "")  && <UserPane token={token} setToken={setToken} apiHost={apiHost} /> }
+            <div className="message-sidebar-spacer" style={{marginLeft: messageContainerSpacing}}>
+                { (token !== "") && <>
+                    {newChannelPrompt ? <NewChannelPopup setNewChannelPrompt={setNewChannelPrompt} apiHost={apiHost} token={token}/> : 
+                        <div className="message-master">
+                            <MessageListGroup channel={channel} token={token} apiHost={apiHost} sockHost={sockHost} key={channel}/>
+                        </div>
+                    }
+                    
+                </> }
+                { (token !== "") && <MessageBar channel={channel} token={token} apiHost={apiHost} publicKey={null} sidebar={sidebar}/> }
+            </div>
+            <div className="message-sidebar-spacer">
+                { (token !== "") && <Sidebar
+                    apiHost={apiHost}
+                    channel={channel}
+                    setChannel={setChannel}
+                    token={token}
+                    setShow={setSidebar}
+                    show={sidebar}
+                    channels={channels}
+                    setChannels={setChannels}
+                    setNewChannelPrompt={setNewChannelPrompt}
+                    newChannelPrompt={newChannelPrompt}
+                />}
+            </div>
+        <hr className="bottom-spacer"/>
+    </>)
+}
+
+export default App
