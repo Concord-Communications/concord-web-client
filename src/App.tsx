@@ -1,12 +1,12 @@
 import MessageListGroup from "./components/MessageListGroup.tsx";
 import MessageBar from "./components/MessageBar.tsx"
-import UserPane from "./components/UserPane.tsx";
 
 import './App.css'
 import {useState, useEffect} from "react";
 import Sidebar from "./components/Sidebar.tsx";
 import { Channel } from "./components/Sidebar.tsx";
 import NewChannelPopup from "./components/NewChannelPopup.tsx"
+import Login from "./components/Login.tsx";
 
 function App() {
     const [token, setToken] = useState("")
@@ -32,7 +32,11 @@ function App() {
     }, [sidebar])
 
     return (<>
-        { (token === "")  && <UserPane token={token} setToken={setToken} apiHost={apiHost} /> }
+        { (token === "")  && <Login
+            setToken={setToken}
+            token={token}
+            apiHost={apiHost}
+        />}
             <div className="message-sidebar-spacer" style={{marginLeft: messageContainerSpacing}}>
                 { (token !== "") && <>
                     {newChannelPrompt ? <NewChannelPopup setNewChannelPrompt={setNewChannelPrompt} apiHost={apiHost} token={token}/> : 

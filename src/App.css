@@ -105,6 +105,23 @@ body {
     font-family: Menlo;
 }
 
+.user-settings-pane button {
+    border: none;
+    color: rgb(255, 255, 255);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    background: #020024;
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 19%, rgba(238, 0, 255, 1) 100%);
+    border-radius: 15px;
+    left: 50%;
+    transform: translate(50%, 0%);
+}
+
 .bar-item {
     display: flex;
     cursor: pointer;

@@ -9,12 +9,14 @@ interface Props {
 }
 
 
-function UserPane(props: Props) {
+function CreateUserPane(props: Props) {
     // @ts-ignore
     const { token, setToken, apiHost } = props;
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [displayName, setDisplayName] = useState("")
+    const [inviteCode, setInviteCode] = useState<string>("")
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
@@ -25,15 +27,20 @@ function UserPane(props: Props) {
         }
         setUsername("")
         setPassword("")
+        setDisplayName("")
     }
 
     const getJWTFromLogin = async (name: string, password: string) => {
         try {
-        const token = await axios.post(apiHost + "/auth", {
+        const response = await axios.post(apiHost + "/auth/register", {
+            name: displayName,
             userhandle: name,
-            password: password
+            password: password,
+            description: ""
+        }, {headers: 
+            {'x-invite-token': inviteCode}
         })
-        setToken(token.data.toString())
+        setToken(response.headers['x-auth-token'])
         } catch (error) {
             console.log(error);
             window.alert("Error logging in!")
@@ -47,9 +54,19 @@ function UserPane(props: Props) {
                 <h1>Login</h1>
                 <form onSubmit={(event) => handleSubmit(event)}>
                     <div>
+                    <input onChange={(event) => setDisplayName(event.target.value)}
+                            type="text"
+                            placeholder="Display Name"
+                            className="textInput"
+                            aria-describedby="button-addon2"
+                            aria-label="Display Name"
+                            id="displayNameInput"
+                            value={displayName}
+                            required={true}
+                    />
                     <input onChange={(event) => setUsername(event.target.value)}
                            type="text"
-                           placeholder="Username (handle minus the @ sign)"
+                           placeholder="Handle (don't include an @ sign)"
                            aria-label="Your Username"
                            aria-describedby="button-addon2"
                            className="textInput"
@@ -62,20 +79,31 @@ function UserPane(props: Props) {
                     <input onChange={(event) => setPassword(event.target.value)}
                            type="password"
                            placeholder="Password"
-                           aria-label="Your Username"
+                           aria-label="Your password"
                            aria-describedby="button-addon2"
                            className="textInput"
                            id="password-submit"
                            value={password}
                            required={true}
                     />
+                    <input onChange={(event) => setInviteCode(event.target.value)}
+                        type="password"
+                        placeholder="invite-code"
+                        aria-label="invite code (sometimes required)"
+                        aria-describedby="invite code (sometimes required)"
+                        className="textInput"
+                        id="id-submit"
+                        value={inviteCode}
+                        required={false}
+                    />
                     </div>
-                    <input type="submit" value="sign in"/>
+                    <input type="submit" value="create user"/>
+                    <h5>*Note: some servers will not allow new accounts to be created</h5>
                 </form>
-                <button onClick={() => props.setRegisterNewUser(true)}>Create an account</button>
+                <button onClick={() => props.setRegisterNewUser(false)}>Already have an account?</button>
             </div>
         </>
     )
 }
 
-export default UserPane;
+export default CreateUserPane;
