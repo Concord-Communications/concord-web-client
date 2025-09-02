@@ -36,7 +36,7 @@ function CreateUserPane(props: Props) {
             name: displayName,
             userhandle: name,
             password: password,
-            description: ""
+            description: "no description provided"
         }, {headers: 
             {'x-invite-token': inviteCode}
         })
