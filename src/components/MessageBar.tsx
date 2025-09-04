@@ -1,4 +1,4 @@
-import {FormEvent, useState} from "react";
+import {FormEvent, useRef, useState} from "react";
 import axios from "axios";
 
 interface Props {
@@ -30,8 +30,8 @@ function MessageBar(props: Props) {
     }
     const { token, apiHost, channel, publicKey } = props;
     const [userInput, setUserInput] = useState("");
-    const handleSubmit = async (event: FormEvent) => {
-        event.preventDefault();
+    const textref = useRef<HTMLTextAreaElement>(null)
+    const handleSubmit = async () => {
         try {
             const encrypted = await encrypt(userInput, publicKey)
             await axios.post(apiHost + '/messages/' + channel,
@@ -53,20 +53,35 @@ function MessageBar(props: Props) {
         setUserInput("")
     }
 
+    const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+       if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault() // don't add newline
+            if (userInput.trim().length < 1) {
+                return
+            }
+            handleSubmit()
+            if (textref.current) {textref.current.style.height = "auto"}
+       }
+    }
+
+    const handleInput = () => {
+        if (textref.current) {
+            textref.current.style.height = "auto"
+            textref.current.style.height = textref.current.scrollHeight + "px"
+        }
+    }
+
+
+
     return (<>
         <div className="message-input-container">
-            <form onSubmit={(event) => handleSubmit(event)}>
-                <input onChange={(event) => setUserInput(event.target.value)}
-                       type="text"
-                       className="message-bar"
-                       placeholder="Your message here sire"
-                       aria-label="Your message here sire"
-                       aria-describedby="button-addon2"
-                       id="message-submit"
-                       value={userInput}
-                       style={{transform: props.sidebar ? "translate(0%)" : "translate(-10%)"}}
-                />
-            </form>
+           <textarea
+                onChange={(e) => setUserInput(e.target.value)}
+                onKeyDown={handleKeydown}
+                onInput={handleInput}
+                className="message-bar"
+                placeholder="Your message here sire"
+           /> 
         </div>
     </>)
 }

@@ -23,12 +23,33 @@ body {
 
 .message-bar {
     min-width: 100%;
-    min-height: 50px;
+    min-height: 10px;
     padding-inline: 20px;
+    padding-block-end: 0;
     color: white;
     background-color: #2c2c2c;
     border: none;
+    padding-block-start: 30px;
     border-radius: 10px;
+    font-size: 23px;
+    resize: none;
+}
+
+.message-bar textarea {
+    padding: 0;
+    max-height: 10px;
+    padding: 0 0.5 em;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.message-bar textarea::placeholder {
+    margin: 0;
+    line-height: 1.2;
 }
 
 .message-container {
