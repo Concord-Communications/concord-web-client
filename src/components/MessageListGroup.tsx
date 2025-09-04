@@ -25,6 +25,7 @@ interface Message {
     channelid: number;
     name_color: string;
     encryped: boolean;
+    type: string; // make it so it can handle direct messages
 }
 
 function MessageListGroup(props: Props) {
@@ -57,13 +58,13 @@ function MessageListGroup(props: Props) {
     }*/
 
     const handleSocketMessage = async (event: MessageEvent) => {
-        const message = JSON.parse(event.data)
+        let message = JSON.parse(event.data)
         console.log(message)
 
         if (message.error === true) {
             sock.current?.close()
         }
-        if (message.id != null && typeof message.id === "number") {
+        if (message.type == "new_message" && message.id != null && typeof message.id === "number") {
             const result = await axios.get<Message[]>(
                 apiHost + "/messages/" + message.channel + "/" + message.id + "/?singleOnly=1",
                 {headers: {
@@ -77,6 +78,15 @@ function MessageListGroup(props: Props) {
             let tmpdate = new Date(result.data[0].date)
             result.data[0].date = tmpdate.toLocaleString()
             setMessages((previous) => [...previous, result.data[0]])
+        } else if (message.type == "direct_message") {
+            message = (message as Message)
+
+            const notificationPreview = message.content.substring(0, 30) + "..."
+            tryNotify(notificationPreview, true, "")
+
+            let tmpdate = new Date(message.date)
+            message.date = tmpdate.toLocaleString()
+            setMessages((previous) => [...previous, message])
         }
     }
 
