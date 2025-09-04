@@ -216,6 +216,7 @@ function MessageListGroup(props: Props) {
                         sendername={message.name}
                         senderid={message.senderid}
                         name_color={message.name_color}
+                        sender_handle={message.handle}
                     />
                     </div>
                 );
@@ -229,6 +230,7 @@ function MessageListGroup(props: Props) {
                     senderid={message.senderid}
                     key={message.id}
                     name_color={message.name_color}
+                    sender_handle={message.handle}
                 />
             );
             }

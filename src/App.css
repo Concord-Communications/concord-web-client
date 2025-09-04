@@ -38,6 +38,7 @@ body {
 
 .message-container .user-title{
     color: #00fff7;
+    margin-bottom: 0;
 }
 .message-container .message-header {
     display: flex;
@@ -76,6 +77,12 @@ body {
 
 .message-container .user-title:hover{
     text-decoration: underline;
+}
+
+.message-container .handle {
+    color: #bdbdbd;
+    margin-top: 0;
+    margin-bottom: 7px;
 }
 
 .error-text {

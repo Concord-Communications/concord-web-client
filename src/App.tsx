@@ -13,7 +13,7 @@ function App() {
     const [apiHost] = useState("http://" + window.location.hostname + ":8080/api")
     const [sockHost] = useState("ws://" + window.location.hostname + ":8081")
     const [channel, setChannel] = useState("1")
-    const [sidebar, setSidebar] = useState<boolean>(false);
+    const [sidebar, setSidebar] = useState<boolean>(true);
     const [messageContainerSpacing, setMessageContainerSpacing] = useState<string>("0%")
     const [channels, setChannels] = useState<Channel[]>([])
     const [newChannelPrompt, setNewChannelPrompt] = useState(false)
