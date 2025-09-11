@@ -14,6 +14,10 @@ body {
 }
 
 .newchannel-buttontext {
+    margin-bottom: 20px;
+    margin-top: 0;
+    padding-top: 0;
+    margin-left: 5px;
     cursor: pointer;
 }
 
@@ -74,7 +78,7 @@ body {
     background-color: #171717;
     color: white;
     border-radius: 5px;
-    width: 150px;
+    width: 80px;
     height: 80px;
     position: fixed;
     top: 10px;

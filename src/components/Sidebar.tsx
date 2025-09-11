@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import SideBarListGroup from "./SideBarListGroup.tsx";
+import { PanelRightClose } from "lucide-react"
 
 export interface Channel {
     id: number
@@ -21,6 +22,8 @@ interface Props {
     setChannels: (channels: Channel[]) => void
     setNewChannelPrompt: (newChannelPrompt: boolean) => void
     newChannelPrompt: boolean
+    setRelayMode: (relayMode: boolean) => void
+    setRelaychannel: (relaychannel: number) => void
 }
 
 
@@ -75,7 +78,7 @@ function Sidebar(props: Props) {
                 <div className="sidebar">
                     <div style={{padding: '20px'}}>
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <h3>Channels</h3>
+                        <h2>Concord</h2>
                         <button className="sidebar-button" onClick={() => setShow(!show)}>
                             X
                         </button>
@@ -89,6 +92,8 @@ function Sidebar(props: Props) {
                         channel={props.channel}
                         setNewChannelPrompt={props.setNewChannelPrompt}
                         newChannelPrompt={props.newChannelPrompt}
+                        setRelayMode={props.setRelayMode}
+                        setRelaychannel={props.setRelaychannel}
                     />
                     </div>
                     </div>
@@ -101,7 +106,7 @@ function Sidebar(props: Props) {
         return (
             <>
                 <button className="sidebar-button" onClick={() => setShow(!show)}>
-                    <h1>sidebar</h1>
+                    <PanelRightClose size="48px"/>
                 </button>
             </>
         )
