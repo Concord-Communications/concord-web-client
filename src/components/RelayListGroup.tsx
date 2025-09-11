@@ -25,7 +25,7 @@ interface Message {
 }
 
 function RelayListGroup(props: Props) {
-    const { token, apiHost, sockHost, relaychannel } = props
+    const { token, sockHost, relaychannel } = props
     // IT WILL BE FIXED I SWEAR
     const [messages, setMessages] = useState<Message[]>([])
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,6 @@ function RelayListGroup(props: Props) {
 
     const handleSocketMessage = async (event: MessageEvent) => {
         let message = JSON.parse(event.data)
-        console.log(message)
 
         if (message.error === true) {
             sock.current?.close()
