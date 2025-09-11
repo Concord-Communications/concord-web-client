@@ -7,6 +7,8 @@ import Sidebar from "./components/Sidebar.tsx";
 import { Channel } from "./components/Sidebar.tsx";
 import NewChannelPopup from "./components/NewChannelPopup.tsx"
 import Login from "./components/Login.tsx";
+import RelayMessageBar from "./components/RelayMessageBar.tsx";
+import RelayListGroup from "./components/RelayListGroup.tsx";
 
 function App() {
     const [token, setToken] = useState("")
@@ -17,6 +19,8 @@ function App() {
     const [messageContainerSpacing, setMessageContainerSpacing] = useState<string>("0%")
     const [channels, setChannels] = useState<Channel[]>([])
     const [newChannelPrompt, setNewChannelPrompt] = useState(false)
+    const [relaychannel, setRelaychannel] = useState(0)
+    const [relayMode, setRelayMode] = useState(false)
 
     // Encryption
     //const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null)
@@ -39,14 +43,14 @@ function App() {
         />}
             <div className="message-sidebar-spacer" style={{marginLeft: messageContainerSpacing}}>
                 { (token !== "") && <>
-                    {newChannelPrompt ? <NewChannelPopup setNewChannelPrompt={setNewChannelPrompt} apiHost={apiHost} token={token}/> : 
-                        <div className="message-master">
-                            <MessageListGroup channel={channel} token={token} apiHost={apiHost} sockHost={sockHost} key={channel}/>
-                        </div>
-                    }
-                    
+                    {newChannelPrompt ? <NewChannelPopup setNewChannelPrompt={setNewChannelPrompt} apiHost={apiHost} token={token}/> : <></>}
+                    <div className="message-master">
+                        {(!newChannelPrompt && relayMode) && <RelayListGroup token={token} apiHost={apiHost} sockHost={sockHost} relaychannel={relaychannel} key={relaychannel}/>} 
+                        {(!newChannelPrompt && !relayMode) && <MessageListGroup channel={channel} token={token} apiHost={apiHost} sockHost={sockHost} key={channel}/> }
+                    </div>
                 </> }
-                { (token !== "") && <MessageBar channel={channel} token={token} apiHost={apiHost} publicKey={null} sidebar={sidebar}/> }
+                { (token !== "" && !relayMode) && <MessageBar channel={channel} token={token} apiHost={apiHost} publicKey={null} sidebar={sidebar}/> }
+                { (token !== "" &&  relayMode) && <RelayMessageBar relaychannel={relaychannel} token={token} apiHost={apiHost} sidebar={sidebar} key={relaychannel}/> }
             </div>
             <div className="message-sidebar-spacer">
                 { (token !== "") && <Sidebar
@@ -60,6 +64,8 @@ function App() {
                     setChannels={setChannels}
                     setNewChannelPrompt={setNewChannelPrompt}
                     newChannelPrompt={newChannelPrompt}
+                    setRelayMode={setRelayMode}
+                    setRelaychannel={setRelaychannel}
                 />}
             </div>
         <hr className="bottom-spacer"/>

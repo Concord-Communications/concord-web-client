@@ -4,41 +4,21 @@ import axios from "axios";
 interface Props {
     token: string;
     apiHost: string;
-    channel: string;
-    publicKey: CryptoKey | null;
+    relaychannel: number;
     sidebar: boolean;
 }
 
-function MessageBar(props: Props) {
-    const encrypt = async (text: string, key: CryptoKey | null) => {
-        if (key === null) {return {iv: "", ciphertext: text, encrypted: false}}
-        const subtle = window.crypto.subtle;
-        const iv = window.crypto.getRandomValues(new Uint8Array(12))
-        const enc = new TextEncoder().encode(text)
-
-        const ciphertext = await subtle.encrypt(
-            { name: "AES-GCM", iv },
-            key,
-            enc
-        )
-
-        // Convert to Base64 for transmission
-        const ivBase64 = btoa(String.fromCharCode(...iv));
-        const ciphertextBase64 = btoa(String.fromCharCode(...new Uint8Array(ciphertext)));
-        
-        return { iv: ivBase64, ciphertext: ciphertextBase64, encrypted: true}
-    }
-    const { token, apiHost, channel, publicKey } = props;
+function RelayMessageBar(props: Props) {
+    const { token, apiHost, relaychannel} = props;
     const [userInput, setUserInput] = useState("");
     const textref = useRef<HTMLTextAreaElement>(null)
     const handleSubmit = async () => {
         try {
-            const encrypted = await encrypt(userInput, publicKey)
-            await axios.post(apiHost + '/messages/' + channel,
+            await axios.post(apiHost + '/messages/relays/' + relaychannel.toString(),
                 {
-                    content: encrypted.ciphertext,
-                    iv: encrypted.iv,
-                    encrypted: encrypted.encrypted, // if there is no key provided it will return false
+                    content: userInput,
+                    encrypted: false,
+                    iv: null,
                 },
                 {
                 headers: {
@@ -46,11 +26,11 @@ function MessageBar(props: Props) {
                     //TODO: add personal token rather than hardcoded
                 },
             })
+            setUserInput("")
         } catch (error) {
             window.alert("There was an error sending your message")
             console.log(error);
         }
-        setUserInput("")
     }
 
     const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -79,13 +59,15 @@ function MessageBar(props: Props) {
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyDown={handleKeydown}
                 onInput={handleInput}
-                value={userInput}
                 className="message-bar"
-                placeholder="Your message here sire"
+                value={userInput}
+                placeholder={"message Relay " + relaychannel}
            /> 
+
         </div>
+
     </>)
 }
 
 
-export default MessageBar
+export default RelayMessageBar;
